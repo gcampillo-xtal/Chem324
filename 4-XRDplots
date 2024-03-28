@@ -1,0 +1,77 @@
+import matplotlib.pyplot as plt
+
+# Function to read data from .xy or .xye file and return x, y data
+def read_xy_file(filename):
+    with open(filename) as f:
+        lines = f.readlines()
+
+    x = []
+    y = []
+    for line in lines:
+        if not line.startswith('#'):
+            parts = line.strip().split()
+            if len(parts) >= 2:
+                try:
+                    x.append(float(parts[0]))
+                    y.append(float(parts[1]))
+                except ValueError:
+                    pass
+    return x, y
+
+# Normalize y-values to range from 0 to 1
+def normalize_y(y):
+    max_y = max(y)
+    return [val / max_y for val in y]
+
+# Read data from the first file
+x1, y1 = read_xy_file('simu-adp-bpeta.xye')
+
+# Read data from the second file
+x2, y2 = read_xy_file('JDL_adapalene_bpe.xy')
+
+# Read data from the third file
+x3, y3 = read_xy_file('JDL_adapalene.xy')
+
+# Read data from the fourth file
+x4, y4 = read_xy_file('JDL_BPE.xy')
+
+# Normalize y-values from 0 to 1 for all plots
+y1_norm = normalize_y(y1)
+y2_norm = normalize_y(y2)
+y3_norm = normalize_y(y3)
+y4_norm = normalize_y(y4)
+
+# Define offsets for each plot
+offsets = [0, 0.5, 1.0, 1.5]
+
+# Plot the data for plot 4 with an offset (reversed order)
+plt.plot(x4, [y + offsets[3] for y in y4_norm], color='orange', label='bpeta')
+
+# Plot the data for plot 3 with an offset (reversed order)
+plt.plot(x3, [y + offsets[2] for y in y3_norm], color='green', label='adp')
+
+# Plot the data for plot 2 with an offset (reversed order)
+plt.plot(x2, [y + offsets[1] for y in y2_norm], color='red', label='adp-bpeta')
+
+# Plot the data for plot 1 with an offset (reversed order)
+plt.plot(x1, [y + offsets[0] for y in y1_norm], color='blue', label='simu. adp-bpeta')
+
+# Add labels and legends
+plt.xlabel('2θ (deg)', fontname='Arial', fontsize=16)
+plt.ylabel('Normalized Intensity', fontname='Arial', fontsize=16)
+plt.legend(frameon=False, fontsize=9)
+
+# Set x-axis limits
+plt.xlim(5, 40)
+
+# Remove numerical values from y-axis
+plt.tick_params(axis='y', which='both', left=False, right=False, labelleft=False)
+
+# Set font for axis ticks
+plt.xticks(fontname='Arial', fontsize=14)
+
+# Save high-resolution image as PNG
+plt.savefig('output.png', dpi=300, bbox_inches='tight')
+
+# Display the plot
+plt.show()
