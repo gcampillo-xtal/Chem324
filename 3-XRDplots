@@ -1,0 +1,90 @@
+import matplotlib.pyplot as plt
+
+# Open the .xye file and read the data for plot 1
+with open('simu-ada-azo.xye') as f:
+    lines = f.readlines()
+
+x1 = []
+y1 = []
+for line in lines:
+    if not line.startswith('#'):
+        parts = line.strip().split()
+        if len(parts) >= 2:
+            try:
+                x1.append(float(parts[0]))
+                y1.append(float(parts[1]))
+            except ValueError:
+                pass
+
+# Open the .xye file and read the data for plot 2
+with open('JDL_adamantane_azopyridine.xy') as f:
+    lines = f.readlines()
+
+x2 = []
+y2 = []
+for line in lines:
+    if not line.startswith('#'):
+        parts = line.strip().split()
+        if len(parts) >= 2:
+            try:
+                x2.append(float(parts[0]))
+                y2.append(float(parts[1]))
+            except ValueError:
+                pass
+
+# Open the .xye file and read the data for plot 3
+with open('JDL_adamantane-1-carboxylicacid.xy') as f:
+    lines = f.readlines()
+
+x3 = []
+y3 = []
+for line in lines:
+    if not line.startswith('#'):
+        parts = line.strip().split()
+        if len(parts) >= 2:
+            try:
+                x3.append(float(parts[0]))
+                y3.append(float(parts[1]))
+            except ValueError:
+                pass            
+            
+
+# Add an offset to the y-coordinates of plot 2
+offset = 1000
+y2_offset = [y + offset for y in y2]
+
+# Add an offset to the y-coordinates of plot 3
+offset = 2000
+y3_offset = [y + offset for y in y3]
+
+# Normalize the y-values to a range of 0 to 1
+y1_norm = [y / max(y1) for y in y1]
+y2_norm = [y / max(y2) for y in y2_offset]
+y3_norm = [y / max(y3) for y in y3_offset]
+
+# Plot the data for plot 1
+plt.plot(x1, y1_norm, color='blue', label='simu-ada-azo')
+plt.ylabel('Intensity (a.u.)', fontname='Arial', fontsize=16)
+plt.legend(frameon=False, fontsize=9)
+
+# Plot the data for plot 2 with an offset
+plt.plot(x2, y2_norm, color='red', label='adamantane_azopyridine')
+plt.xlabel('2θ (deg)', fontname='Arial', fontsize=16)
+plt.legend(frameon=False, fontsize=9)
+
+# Plot the data for plot 3 with an offset
+plt.plot(x3, y3_norm, color='green', label='adamantane-1-carboxylicacid')
+plt.legend(frameon=False, fontsize=9)
+
+# Set the x-axis limits to only include values from 5 to 40
+plt.xlim(5, 40)
+
+# Remove the ticks and values from the y-axis and move the y-label closer
+plt.tick_params(axis='y', which='both', length=0, labelsize=0)
+plt.ylabel('Intensity (a.u.)', fontname='Arial', fontsize=16, labelpad=-5)
+
+# Set the font for the axis ticks and increase the font size to 14
+plt.xticks(fontname='Arial', fontsize=14)
+
+# Display the plot
+plt.show()
